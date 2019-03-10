@@ -1,0 +1,19 @@
+agenda:
+    resource: "@AgendaBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+contatos:
+    resource: "@ContatosBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+
+fos_js_routing:
+    resource: "@FOSJsRoutingBundle/Resources/config/routing/routing.xml"
+
+adesigns_calendar:
+    resource: "@ADesignsCalendarBundle/Resources/config/routing.xml"

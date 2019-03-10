@@ -1,0 +1,10 @@
+Pensar em como atualizar a tabela ao clicar no calendario
+
+    pergunta: preciso de uma nova rota ou faço por ajax ?
+    se for por ajax como faço a consulta no banco ?
+    se eu recarregar a pagina em uma nova rota reseto o calendario...
+
+    Raiva!!!
+
+
+    Parei no tentando fazer o find na data desejada

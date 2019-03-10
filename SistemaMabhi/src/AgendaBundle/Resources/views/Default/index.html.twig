@@ -1,0 +1,120 @@
+{% extends '::base.html.twig' %}
+{% block javascripts %}
+    <script src="//code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="//code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{{ asset('bundles/pugxautocompleter/js/autocompleter-jqueryui.js') }}"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
+{% endblock %}
+{% block body %}
+    <style>
+        .cont{
+            overflow: hidden;
+        }
+        .listaContatos{
+            text-decoration: none;
+        }
+        .fc-other-month{
+            min-width: 30%;
+        }
+    </style>
+    <div style="margin: 10px;" class="cont row">
+        <div class="col-lg-6 col-sm-12 col-md-6">
+            <div class="row" style="margin-bottom: 15px;margin-top: 10px;">
+                <div class="col-3"></div>
+                <form class="form-inline my-2 my-lg-0 col">
+                    <input class="form-control mr-sm-2" type="search" placeholder="O que voce busca ?" aria-label="Search">
+                    <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pesquisar</button>
+                </form>
+                <div class="col-3"></div>
+            </div>
+            <table class="table table-hover" style="border: 1px solid #c0c0c0;">
+                <thead>
+                <tr>
+                    {#<th scope="col">ID</th>#}
+                    <th>Cliente</th>
+                    <th>Horario</th>
+                    <th>Serviço</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if mensagem == "" %}
+                    {% for agendado in agendados %}
+                    <tr>
+                        {#<th>{{ agendado.id }}</th>#}
+                        <td>{{ agendado.idCliente }}</td>
+                        <td>{{ agendado.hora }}</td>
+                        <td>{{ agendado.servico }}</td>
+                        <td>
+                        {% if agendado.status == "1" %}
+                            <a href="2019/desativar/{{ agendado.id }}"><button type="button" class="btn btn-danger">Desmarcar</button></a>
+                        {% else %}
+                            <a href="ativar/{{ agendado.id }}"><button type="button" class="btn btn-danger">Remarcar</button></a>
+                        {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    {% if semrota == 0 %}
+                        <tr id="trbtnAgendar">
+                            <td colspan="4">
+                                <button type="button" id="agendar" onclick="xamadisabled()" class="btn text-white bg-info" style="width: 90%; margin-left: 5%; margin-right: 5%;">Agendar</button>
+                            </td>
+                        </tr>
+                        <tr id="cadastro" hidden>
+                            <form action="2019/cadastrar" method="post">
+                                <td><input class="form-control" type="text" id="nome" name="nome" placeholder="Nome cliente"></td>
+                                <td><input class="form-control" type="time" id="horario" name="horario"></td>
+                                <td>
+                                    <select class="form-control" id="servico" name="servico" style="width: 190px;">
+                                        <option value="">Entre com o serviço</option>
+                                        {% for lista in listagem %}
+                                            <option value="{{ lista.id }}">{{ lista.nome }} - {{ lista.preco }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><button type="submit" class="btn btn-success">Cadastrar</button</td>
+                            </form>
+                        </tr>
+                    {% else %}
+                        <tr id="trbtnAgendar" style="text-align: center;">
+                            <td colspan="4">Clique em alguma data para carregar a  agenda!</td>
+                        </tr>
+                    {% endif %}
+                {% else %}
+
+                    <tr id="trbtnAgendar">
+                        <td colspan="4">
+                            <button type="button" id="agendar" onclick="xamadisabled()" class="btn text-white bg-info" style="width: 90%; margin-left: 5%; margin-right: 5%;">Agendar</button>
+                        </td>
+                    </tr>
+                    <tr id="cadastro" hidden>
+                        <form action="2019/cadastrar" method="post">
+                            <td><input class="form-control" type="text" id="nome" name="nome" placeholder="Nome cliente"></td>
+                            <td><input class="form-control" type="time" id="horario" name="horario"></td>
+                            <td>
+                                <select class="form-control" id="servico" name="servico" style="width: 190px;">
+                                    <option value="">Entre com o serviço</option>
+                                    {% for lista in listagem %}
+                                        <option value="{{ lista.id }}">{{ lista.nome }} - {{ lista.preco }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td><button type="submit" class="btn btn-success">Cadastrar</button</td>
+                        </form>
+                    </tr>
+
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-6 col-sm-12 col-md-6">
+            {% include 'ADesignsCalendarBundle::calendar.html.twig' %}
+        </div>
+    </div>
+    <script>
+        function xamadisabled() {
+            document.getElementById('cadastro').removeAttribute("hidden");
+            document.getElementById('trbtnAgendar').setAttribute("hidden", true);
+        }
+    </script>
+{%  endblock %}

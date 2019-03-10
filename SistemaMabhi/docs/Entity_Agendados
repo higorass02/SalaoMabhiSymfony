@@ -1,0 +1,8 @@
+
+id
+cliente_id
+data_agendado
+data_cadastro
+servico
+hora
+status

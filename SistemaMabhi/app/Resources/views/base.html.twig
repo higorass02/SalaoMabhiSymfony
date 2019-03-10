@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css" integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ asset('bundles/adesignscalendar/css/fullcalendar/fullcalendar.css') }}" />
+
+    <style>
+        .centralizar{
+            margin-left: 12%;
+        }
+        .centralizar2{
+            margin-left: 20%;
+        }
+        .centralizar3{
+            margin-left: 26%;
+        }
+        a:link
+        {
+            text-decoration:none;
+        }
+    </style>
+</head>
+<body>
+
+{% block top %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div style="text-align: center;">
+            <a class="navbar-brand" href="/">Sistema Mabhi</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+            <div>
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuContatos" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Contatos
+                </button>
+                <div class="dropdown-menu centralizar" aria-labelledby="dropdownMenuContatos">
+                    <a class="dropdown-item" href="{{ path('contatosNovo') }}">Novo Contato</a>
+                    <a class="dropdown-item" href="{{ path('contatosListagem') }}">Listagem de Contatos</a>
+                    <a class="dropdown-item" href="{{ path('contatosListagemDesativados') }}">Listagem de Contatos Desativados</a>
+                </div>
+            </div>
+            <div>
+                <a href="{{ path('agenda') }}"><button class="btn" type="button" >Agenda</button></a>
+            </div>
+            <div>
+                <a href="{{ path('servicoListagem') }}"><button class="btn" type="button" >Serviço</button></a>
+            </div>
+        </div>
+    </nav>
+{% endblock %}
+<div class="conteudo">
+    {% block body %}{% endblock %}
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.6/umd/popper.min.js" integrity="sha384-wHAiFfRlMFy6i5SRaxvfOCifBUQy1xHdJ/yoi7FRNXMRBu5WHdZYu1hA6ZOblgut" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k" crossorigin="anonymous"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+<script type="text/javascript" src="{{ path('fos_js_routing_js', {"callback": "fos.Router.setData"}) }}"></script>
+
+<script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/jquery/jquery-1.8.2.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/fullcalendar/jquery.fullcalendar.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('bundles/adesignscalendar/js/calendar-settings.js') }}"></script>
+</body>
+</html>

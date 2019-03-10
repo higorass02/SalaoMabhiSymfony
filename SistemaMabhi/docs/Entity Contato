@@ -1,0 +1,37 @@
+Id int
+nome str
+tell str
+cell str
+email str
+bairro str
+
+CREATE TABLE `bdsistemamabhi`.`tb_contatos` ( `id` INT NULL AUTO_INCREMENT , `nome` VARCHAR(100) NOT NULL , `tell` VARCHAR(20) NOT NULL , `cell` VARCHAR(20) NOT NULL , `tp_contato` BOOLEAN NOT NULL , `sexo` CHAR(1) NOT NULL , `email` VARCHAR(100) NOT NULL , `bairro` VARCHAR(100) NOT NULL , PRIMARY KEY (`id`)) ENGINE = InnoDB;
+
+INSERT INTO `contatos` (`id`, `nome`, `tell`, `cell`, `email`, `bairro`) VALUES (NULL, 'higor', '(24) 33468773', '(24) 999159768', 'higoraugusto120@gmail.com', 'Parque das ilhas');
+
+php bin/console doctrine:schema:update --force --complete --dump-sql
+bin/console assets:install web
+
+
+//var_dump($request->request->all());
+
+            $id = $request->request->get('id');
+            $nome = $request->request->get('txtnome');
+            $tell = $request->request->get('tell');
+            $cell = $request->request->get('cell');
+            $email = $request->request->get('email');
+            $bairro = $request->request->get('bairro');
+
+            $em = $this->getDoctrine()->getManager();
+
+            $contatos->setId($id);
+            $contatos->setNome($nome);
+            $contatos->setTell($tell);
+            $contatos->setCell($cell);
+            $contatos->setEmail($email);
+            $contatos->setBairro($bairro);
+
+            $em->persist($contatos);
+            $em->flush();
+
+            return $this->redirectToRoute('contatosListagem');

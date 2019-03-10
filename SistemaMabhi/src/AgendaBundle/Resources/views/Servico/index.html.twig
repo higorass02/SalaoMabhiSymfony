@@ -1,0 +1,83 @@
+{% extends '::base.html.twig' %}
+
+{% block body %}
+    <style>
+        .cont{
+            overflow: hidden;
+        }
+        .listaContatos{
+            text-decoration: none;
+        }
+    </style>
+    <script >
+        $('#preco').mask('#.##0,00', {reverse: true});
+    </script>
+    <div style="text-align: center;">
+        {% if mensagem == "ativos" %}
+            <h2>Serviços Ativos</h2>
+        {% else %}
+            <h2>Serviços Desativados</h2>
+        {% endif %}
+    </div>
+    <div style="margin: 10px;" class="cont row">
+        <div class="col-2"></div>
+        <table class="table table-hover col">
+
+            <thead>
+            <tr>
+                {#<th scope="col">ID</th>#}
+                <th scope="col">Nome</th>
+                <th scope="col">Preço</th>
+                <th scope="col">Data Ultima Atualização</th>
+                <th scope="col">Editar</th>
+                <th scope="col">Desativar</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            {% for servico in servicos %}
+                <tr>
+                    {#<th>{{ servico.id }}</th>#}
+                    <td>{{ servico.Nomeservico }}</td>
+                    <td>{{ servico.Preco }}</td>
+                    {#<th>{{ servico.datacriacao }}</th>#}
+                    <td>{{ servico.dtAtualizacao|date('d/m/Y') }}</td>
+                    <td>
+                        <a href="/Servico/editar/{{ servico.id }}"><button type="button" class="btn btn-info">Editar</button></a>
+                    </td>
+                    <td>
+                        {% if servico.Status == "1" %}
+                            <a href="desativar/{{ servico.id }}"><button type="button" class="btn btn-warning">Desativar</button></a>
+                        {% else %}
+                            <a href="ativar/{{ servico.id }}"><button type="button" class="btn btn-warning">Ativar</button></a>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+            <tr id="trbtnAgendar">
+                <td colspan="4">
+                    <button type="button" id="servico" onclick="xamaServiço()" class="btn text-white bg-info" style="width: 90%; margin-left: 5%; margin-right: 5%;">Novo Serviço</button>
+                </td>
+            </tr>
+            <tr id="cadastro" hidden>
+                <form action="../Servico/novo" method="post">
+                    <td><input class="form-control" type="text" id="nome" name="nome" placeholder="Nome servico"></td>
+                    <td><input class="form-control" type="text" id="preco" name="preco" placeholder="preco"></td>
+                    <td></td>
+                    <td><input class="btn btn-success" type="submit" value="Cadastrar"></td>
+                    <td></td>
+                </form>
+            </tr>
+            </tbody>
+        </table>
+        <div class="col-2"></div>
+    </div>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <script>
+        function xamaServiço() {
+            document.getElementById('cadastro').removeAttribute("hidden");
+            document.getElementById('trbtnAgendar').setAttribute("hidden", true);
+        }
+    </script>
+{%  endblock %}
