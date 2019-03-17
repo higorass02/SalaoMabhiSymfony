@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 use AgendaBundle\Repository\AgendadosRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+
 class DefaultController extends Controller
 {
+
     /**
      * @Route("/Contatos", name="contatos")
      */
@@ -35,6 +37,7 @@ class DefaultController extends Controller
             ->findBy(array('status' => 1));
 
         $i = 0;
+        $lista = array();
         foreach($contatos as $contato)
         {
             $lista[$i]['id'] = $contato->getId();
@@ -46,6 +49,7 @@ class DefaultController extends Controller
             $lista[$i]['status'] = $contato->getStatus();
             $i++;
         }
+
 
         $texto = 'Aki entra um texto';
         return $this->render('ContatosBundle:Default:listagem.html.twig',

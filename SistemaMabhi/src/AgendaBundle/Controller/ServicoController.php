@@ -6,6 +6,7 @@ use AgendaBundle\AgendaBundle;
 use AgendaBundle\Entity\Agendados;
 use AgendaBundle\Entity\Servicos;
 use ContatosBundle\Entity\Contatos;
+use DoctrineExtensions\Query\Mysql\Date;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\Validator\Constraints\DateTime;
@@ -28,6 +29,7 @@ class ServicoController extends Controller
      */
     public function servicoListagemAction(Request $request)
     {
+
         $servicos = $this->getDoctrine()
             ->getRepository(Servicos::class)
             ->findBy(array('status' => 1));
@@ -43,11 +45,50 @@ class ServicoController extends Controller
                 $lista[$i]['id'] = $servico->getId();
                 $lista[$i]['Nomeservico'] = $servico->getNomeservico();
                 $lista[$i]['Preco'] = $servico->getPreco();
-//                $lista[$i]['dtCriacao'] = $servico->getDataCriacao();
                 $lista[$i]['dtAtualizacao'] = $servico->getDataAtualizacao();
                 $lista[$i]['Status'] = $servico->getStatus();
                 $i++;
             }
+        }
+
+        if($request->request){
+            $salvar = $request->request->get('invisivel');
+        }else{
+            $salvar = '';
+        }
+
+        if($salvar != ''){
+
+            $nome = $request->request->get('nome');
+            $preco = $request->request->get('preco');
+
+            $em = $this->getDoctrine()->getManager();
+            $product = $em->getRepository('AgendaBundle\Entity\Servicos')->find($salvar);
+
+            if (!$product) {
+                throw $this->createNotFoundException(
+                    'No product found for id '.$salvar
+                );
+            }
+            if($servicos != null){
+                foreach ($lista as $item){
+                    $houvealteracao = false;
+                    if($item['Nomeservico'] != $nome){
+                        $product->setNomeservico($nome);
+                        $houvealteracao = true;
+                    }
+                    if($item['Preco'] != $preco){
+                        $product->setPreco($preco);
+                        $houvealteracao = true;
+                    }
+                    if ($houvealteracao == true){
+                        $product->setDataAtualizacao(new \DateTime());
+                    }
+                }
+            }
+
+            $em->flush();
+            return $this->redirectToRoute('servicoListagem');
         }
 
 

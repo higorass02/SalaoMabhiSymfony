@@ -9,9 +9,7 @@
             text-decoration: none;
         }
     </style>
-    <script >
-        $('#preco').mask('#.##0,00', {reverse: true});
-    </script>
+
     <div style="text-align: center;">
         {% if mensagem == "ativos" %}
             <h2>Serviços Ativos</h2>
@@ -21,7 +19,7 @@
     </div>
     <div style="margin: 10px;" class="cont row">
         <div class="col-2"></div>
-        <table class="table table-hover col">
+        <table class="table table-hover col-8">
 
             <thead>
             <tr>
@@ -38,13 +36,20 @@
             {% for servico in servicos %}
                 <tr>
                     {#<th>{{ servico.id }}</th>#}
-                    <td>{{ servico.Nomeservico }}</td>
-                    <td>{{ servico.Preco }}</td>
+                    <td id="nome">{{ servico.Nomeservico }}</td>
+                    <td id="preco">{{ servico.Preco }}</td>
+                    <form id="formtab" method="post">
+                    <td id="nomeinput" hidden><input class="form-control" type="text" id="nome" name="nome" value="{{ servico.Nomeservico }}"></td>
+                    <td id="precoinput" hidden><input class="form-control" type="text" id="preco" name="preco" value="{{ servico.Preco }}"></td>
+
                     {#<th>{{ servico.datacriacao }}</th>#}
                     <td>{{ servico.dtAtualizacao|date('d/m/Y') }}</td>
                     <td>
-                        <a href="/Servico/editar/{{ servico.id }}"><button type="button" class="btn btn-info">Editar</button></a>
+                        <button type="button" class="btn btn-info" id="btn-editar" >Editar</button>
+                        <button type="button" class="btn btn-info" id="btn-salvar" hidden>Salvar</button>
                     </td>
+                    <input hidden name="invisivel" value="{{ servico.id }}">
+                    </form>
                     <td>
                         {% if servico.Status == "1" %}
                             <a href="desativar/{{ servico.id }}"><button type="button" class="btn btn-warning">Desativar</button></a>
@@ -54,13 +59,9 @@
                     </td>
                 </tr>
             {% endfor %}
-            <tr id="trbtnAgendar">
-                <td colspan="4">
-                    <button type="button" id="servico" onclick="xamaServiço()" class="btn text-white bg-info" style="width: 90%; margin-left: 5%; margin-right: 5%;">Novo Serviço</button>
-                </td>
-            </tr>
+
             <tr id="cadastro" hidden>
-                <form action="../Servico/novo" method="post">
+                <form action="../Servico/novo" method="post" id="form">
                     <td><input class="form-control" type="text" id="nome" name="nome" placeholder="Nome servico"></td>
                     <td><input class="form-control" type="text" id="preco" name="preco" placeholder="preco"></td>
                     <td></td>
@@ -69,8 +70,16 @@
                 </form>
             </tr>
             </tbody>
+
         </table>
         <div class="col-2"></div>
+        <div class="col-4"></div>
+        <div id="trbtnAgendar" class="col-4">
+            {#<td colspan="4">#}
+            <button type="button" id="servico" onclick="xamaServiço()" class="btn text-white bg-info" style="width: 90%; margin-left: 5%; margin-right: 5%;">Novo Serviço</button>
+            {#</td>#}
+        </div>
+        <div class="col-4"></div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
@@ -79,5 +88,17 @@
             document.getElementById('cadastro').removeAttribute("hidden");
             document.getElementById('trbtnAgendar').setAttribute("hidden", true);
         }
+        $('#btn-editar').click(function () {
+            $('#nome').attr("hidden", true)
+            $('#nomeinput').attr("hidden", false)
+            $('#preco').attr("hidden", true)
+            $('#precoinput').attr("hidden", false)
+            $('#btn-editar').attr("hidden", true)
+            $('#btn-salvar').attr("hidden", false)
+        })
+        $('#btn-salvar').click(function () {
+            $('#formtab').submit();
+        })
+
     </script>
 {%  endblock %}

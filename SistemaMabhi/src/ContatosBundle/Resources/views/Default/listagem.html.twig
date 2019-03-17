@@ -36,22 +36,22 @@
 
                 {% for contato in contatos %}
                 <tr>
-                    <th>{{ contato.id }}</th>
-                    <th>{{ contato.nome }}</th>
-                    <th>{{ contato.tell }}</th>
-                    <th>{{ contato.cell }}</th>
-                    <th>{{ contato.email }}</th>
-                    <th>{{ contato.bairro }}</th>
-                    <th>
+                    <td>{{ contato.id }}</td>
+                    <td>{{ contato.nome }}</td>
+                    <td>{{ contato.tell }}</td>
+                    <td>{{ contato.cell }}</td>
+                    <td>{{ contato.email }}</td>
+                    <td>{{ contato.bairro }}</td>
+                    <td>
                         <a href="alterar/{{ contato.id }}"><button type="button" class="btn btn-info">Editar</button></a>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         {% if contato.status == "1" %}
                             <a href="desativar/{{ contato.id }}"><button type="button" class="btn btn-warning">Desativar</button></a>
                         {% else %}
                             <a href="ativar/{{ contato.id }}"><button type="button" class="btn btn-warning">Ativar</button></a>
                         {% endif %}
-                    </th>
+                    </td>
                 </tr>
                 {% endfor %}
 
