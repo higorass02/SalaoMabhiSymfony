@@ -47,6 +47,7 @@ class ServicoController extends Controller
                 $lista[$i]['Preco'] = $servico->getPreco();
                 $lista[$i]['dtAtualizacao'] = $servico->getDataAtualizacao();
                 $lista[$i]['Status'] = $servico->getStatus();
+                $lista[$i]['posicao'] = $i;
                 $i++;
             }
         }
@@ -95,6 +96,85 @@ class ServicoController extends Controller
         return $this->render('AgendaBundle:Servico:index.html.twig',
             array(
                 'servicos' => $lista,
+                'rota' => 'ativos',
+                'mensagem' => $mensagem,
+            )
+        );
+    }
+
+    /**
+     * @Route("/Servico/listagemDesativados", name="servicoListagemDesativados")
+     */
+    public function servicoListagemDesativadosAction(Request $request)
+    {
+
+        $servicos = $this->getDoctrine()
+            ->getRepository(Servicos::class)
+            ->findBy(array('status' => 0));
+
+        if($servicos == null){
+            $mensagem = "Nenhum servico cadastrado!!";
+            $lista = '';
+        }else {
+            $mensagem = "";
+            $i = 0;
+            foreach($servicos as $servico)
+            {
+                $lista[$i]['id'] = $servico->getId();
+                $lista[$i]['Nomeservico'] = $servico->getNomeservico();
+                $lista[$i]['Preco'] = $servico->getPreco();
+                $lista[$i]['dtAtualizacao'] = $servico->getDataAtualizacao();
+                $lista[$i]['Status'] = $servico->getStatus();
+                $lista[$i]['posicao'] = $i;
+                $i++;
+            }
+        }
+
+        if($request->request){
+            $salvar = $request->request->get('invisivel');
+        }else{
+            $salvar = '';
+        }
+
+        if($salvar != ''){
+
+            $nome = $request->request->get('nome');
+            $preco = $request->request->get('preco');
+
+            $em = $this->getDoctrine()->getManager();
+            $product = $em->getRepository('AgendaBundle\Entity\Servicos')->find($salvar);
+
+            if (!$product) {
+                throw $this->createNotFoundException(
+                    'No product found for id '.$salvar
+                );
+            }
+            if($servicos != null){
+                foreach ($lista as $item){
+                    $houvealteracao = false;
+                    if($item['Nomeservico'] != $nome){
+                        $product->setNomeservico($nome);
+                        $houvealteracao = true;
+                    }
+                    if($item['Preco'] != $preco){
+                        $product->setPreco($preco);
+                        $houvealteracao = true;
+                    }
+                    if ($houvealteracao == true){
+                        $product->setDataAtualizacao(new \DateTime());
+                    }
+                }
+            }
+
+            $em->flush();
+            return $this->redirectToRoute('servicoListagem');
+        }
+
+
+        return $this->render('AgendaBundle:Servico:index.html.twig',
+            array(
+                'servicos' => $lista,
+                'rota' => 'desativados',
                 'mensagem' => $mensagem,
             )
         );
@@ -149,6 +229,45 @@ class ServicoController extends Controller
                 'servicos' => $lista,
             )
         );
+    }
+
+    /**
+     * @Route("/Servico/desativar/{id}", name="servicoDesativar")
+     */
+    public function servicoDesativarAction(Request $request,$id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository('AgendaBundle\Entity\Servicos')->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException(
+                'No product found for id '.$id
+            );
+        }
+
+        $product->setStatus("0");
+        $em->flush();
+
+        return $this->redirectToRoute('servicoListagem');
+    }
+    /**
+     * @Route("/Servico/ativar/{id}", name="servicoAtivar")
+     */
+    public function servicoAtivarAction(Request $request,$id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $product = $em->getRepository('AgendaBundle\Entity\Servicos')->find($id);
+
+        if (!$product) {
+            throw $this->createNotFoundException(
+                'No product found for id '.$id
+            );
+        }
+
+        $product->setStatus("1");
+        $em->flush();
+
+        return $this->redirectToRoute('servicoListagemDesativados');
     }
 
 }

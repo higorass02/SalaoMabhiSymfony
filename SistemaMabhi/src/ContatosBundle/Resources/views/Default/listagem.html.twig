@@ -16,13 +16,14 @@
             <h2>Contatos Desativados</h2>
         {% endif %}
     </div>
+    <input hidden id="totContatos" value="{{ totContatos }}">
     <div style="margin: 10px;" class="cont row">
 
         <table class="table table-hover">
 
             <thead>
             <tr>
-                <th scope="col">ID</th>
+                {#<th scope="col">ID</th>#}
                 <th scope="col">Nome</th>
                 <th scope="col">Tell</th>
                 <th scope="col">Cell</th>
@@ -36,15 +37,25 @@
 
                 {% for contato in contatos %}
                 <tr>
-                    <td>{{ contato.id }}</td>
-                    <td>{{ contato.nome }}</td>
-                    <td>{{ contato.tell }}</td>
-                    <td>{{ contato.cell }}</td>
-                    <td>{{ contato.email }}</td>
-                    <td>{{ contato.bairro }}</td>
+                    {#<td>{{ contato.id }}</td>#}
+                    <form action="{{ path('contatosAlterar') }}" id="formtab{{ contato.id }}" method="post">
+                    <td id="nome{{ contato.posicao }}">{{ contato.nome }}</td>
+                    <td id="tell{{ contato.posicao }}">{{ contato.tell }}</td>
+                    <td id="cell{{ contato.posicao }}">{{ contato.cell }}</td>
+                    <td id="email{{ contato.posicao }}">{{ contato.email }}</td>
+                    <td id="bairro{{ contato.posicao }}">{{ contato.bairro }}</td>
+                        <input hidden value="{{ contato.id }}" name="id">
+                        <input hidden value="{{ rota }}" name="rota">
+                    <td id="nomeinput{{ contato.posicao }}" hidden><input class="form-control" type="text" id="txtnome{{ contato.posicao }}" name="nome" value="{{ contato.nome }}"></td>
+                    <td id="tellinput{{ contato.posicao }}" hidden><input class="form-control" type="text" id="txttell{{ contato.posicao }}" name="tell" value="{{ contato.tell }}"></td>
+                    <td id="cellinput{{ contato.posicao }}" hidden><input class="form-control" type="text" id="txtcell{{ contato.posicao }}" name="cell" value="{{ contato.cell }}"></td>
+                    <td id="emailinput{{ contato.posicao }}" hidden><input class="form-control" type="text" id="txtemail{{ contato.posicao }}" name="email" value="{{ contato.email }}"></td>
+                    <td id="bairroinput{{ contato.posicao }}" hidden><input class="form-control" type="text" id="txtbairro{{ contato.posicao }}" name="bairro" value="{{ contato.bairro }}"></td>
                     <td>
-                        <a href="alterar/{{ contato.id }}"><button type="button" class="btn btn-info">Editar</button></a>
+                        <button type="button" class="btn btn-info " id="btn-editar{{ contato.posicao }}" >Editar</button>
+                        <button type="button" class="btn btn-info" id="btn-salvar{{ contato.posicao }}" hidden>Salvar</button>
                     </td>
+                    </form>
                     <td>
                         {% if contato.status == "1" %}
                             <a href="desativar/{{ contato.id }}"><button type="button" class="btn btn-warning">Desativar</button></a>
@@ -53,12 +64,67 @@
                         {% endif %}
                     </td>
                 </tr>
+
                 {% endfor %}
+                <tr id="cadastro" hidden>
+                    <form action="{{ path('contatosNovo') }}" method="post" id="form">
+                        {#<td><input type="text" name="id" id="" value="{{ contato.id }}"></td>#}
+                        <td><input class="form-control" type="text" name="nome" id="nome" value="" placeholder="Nome" required></td>
+                        <td><input class="form-control" type="text" name="tell" id="tell" value="" placeholder="Telefone"></td>
+                        <td><input class="form-control" type="text" name="cell" id="cell" value="" placeholder="Celular"></td>
+                        <td><input class="form-control" type="text" name="email" id="email" value="" placeholder="E-mail"></td>
+                        <td><input class="form-control" type="text" name="bairro" id="bairro" value="" placeholder="Bairro"></td>
+                        <td colspan="2"><input class="btn btn-success col-12" type="button" id="cadastrar" value="Cadastrar"></td>
+                    </form>
+                </tr>
 
             </tbody>
         </table>
+        <div class="col-4"></div>
+        <div id="trbtnAgendar" class="col-4">
+            {#<td colspan="4">#}
+            <button id="novocontato" class="btn text-white bg-info col-12">Novo Contato</button>
+            {#</td>#}
+        </div>
+        <div class="col-4"></div>
     </div>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.maskedinput/1.4.1/jquery.maskedinput.min.js"></script>
+    <script>
 
+        $('#cadastrar').click(function () {
+            var tell = $('#tell').val();
+            var cell = $('#cell').val();
+
+            if( tell == '' && cell == ''){
+                alert('Preencha um dos campos (Telefone ou Celeluar)!');
+            }else {
+                $('#form').submit();
+            }
+        })
+        $('#novocontato').click(function () {
+            $('#cadastro').attr("hidden", false)
+            $('#novocontato').attr("hidden", true)
+        })
+        {% for contato in contatos %}
+        $('#btn-editar{{ contato.posicao }}').click(function () {
+            $('#btn-editar{{ contato.posicao }}').attr("hidden", true)
+            $('#btn-salvar{{ contato.posicao }}').attr("hidden", false)
+            $('#nome{{ contato.posicao }}').attr("hidden", true)
+            $('#tell{{ contato.posicao }}').attr("hidden", true)
+            $('#cell{{ contato.posicao }}').attr("hidden", true)
+            $('#email{{ contato.posicao }}').attr("hidden", true)
+            $('#bairro{{ contato.posicao }}').attr("hidden", true)
+
+            $('#nomeinput{{ contato.posicao }}').attr("hidden", false)
+            $('#tellinput{{ contato.posicao }}').attr("hidden", false)
+            $('#cellinput{{ contato.posicao }}').attr("hidden", false)
+            $('#emailinput{{ contato.posicao }}').attr("hidden", false)
+            $('#bairroinput{{ contato.posicao }}').attr("hidden", false)
+        })
+        $('#btn-salvar{{ contato.posicao }}').click(function () {
+            $('#formtab{{ contato.id }}').submit();
+        })
+        {% endfor %}
+    </script>
 {%  endblock %}

@@ -24,6 +24,9 @@
         .centralizar3{
             margin-left: 26%;
         }
+        .centralizar4{
+            margin-left: 27%;
+        }
         a:link
         {
             text-decoration:none;
@@ -46,16 +49,24 @@
                     Contatos
                 </button>
                 <div class="dropdown-menu centralizar" aria-labelledby="dropdownMenuContatos">
-                    <a class="dropdown-item" href="{{ path('contatosNovo') }}">Novo Contato</a>
-                    <a class="dropdown-item" href="{{ path('contatosListagem') }}">Listagem de Contatos</a>
-                    <a class="dropdown-item" href="{{ path('contatosListagemDesativados') }}">Listagem de Contatos Desativados</a>
+                    {#<a class="dropdown-item" href="{{ path('contatosNovo') }}">Novo Contato</a>#}
+                    <a class="dropdown-item" href="{{ path('contatosListagem') }}">Contatos Ativos</a>
+                    <a class="dropdown-item" href="{{ path('contatosListagemDesativados') }}">Contatos Desativados</a>
                 </div>
             </div>
             <div>
                 <a href="{{ path('agenda') }}"><button class="btn" type="button" >Agenda</button></a>
             </div>
             <div>
-                <a href="{{ path('servicoListagem') }}"><button class="btn" type="button" >Serviço</button></a>
+                <button class="btn dropdown-toggle" type="button" id="dropdownMenuContatos" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Serviço
+                </button>
+                <div class="dropdown-menu centralizar4" aria-labelledby="dropdownMenuContatos">
+                    {#<a class="dropdown-item" href="{{ path('contatosNovo') }}">Novo Contato</a>#}
+                    <a class="dropdown-item" href="{{ path('servicoListagem') }}">Serviços Ativos</a>
+                    <a class="dropdown-item" href="{{ path('servicoListagemDesativados') }}">Serviços Desativados</a>
+                </div>
+
             </div>
         </div>
     </nav>

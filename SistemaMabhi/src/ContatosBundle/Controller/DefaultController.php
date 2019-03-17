@@ -15,23 +15,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 
 class DefaultController extends Controller
 {
-
-    /**
-     * @Route("/Contatos", name="contatos")
-     */
-    public function indexAction()
-    {
-        $texto = 'Aki entra um texto';
-        return $this->render('ContatosBundle:Default:index.html.twig', array(
-            'texto' => $texto,
-        ));
-    }
-
     /**
      * @Route("/Contatos/listagem", name="contatosListagem")
      */
     public function contatosListagemAction()
     {
+
         $contatos=$this->getDoctrine()
             ->getRepository('ContatosBundle\Entity\Contatos')
             ->findBy(array('status' => 1));
@@ -47,49 +36,48 @@ class DefaultController extends Controller
             $lista[$i]['email'] = $contato->getEmail();
             $lista[$i]['bairro'] = $contato->getBairro();
             $lista[$i]['status'] = $contato->getStatus();
+            $lista[$i]['posicao'] = $i;
             $i++;
         }
 
-
-        $texto = 'Aki entra um texto';
         return $this->render('ContatosBundle:Default:listagem.html.twig',
             array(
-                'texto' => $texto,
                 'contatos' => $lista,
-                'rota' => 'ativos'
+                'rota' => 'ativos',
+                'totContatos' => $i
             )
         );
     }
     /**
      * @Route("/Contatos/listagemDesativados", name="contatosListagemDesativados")
      */
-    public function contatosListagemDesativadosAction()
+    public function contatosListagemDesativadosAction(Request $request)
     {
+
         $contatos=$this->getDoctrine()
             ->getRepository('ContatosBundle\Entity\Contatos')
             ->findBy(array('status' => 0));
-        if($contatos == null){
-            $lista = "";
-        }else{
-            $i = 0;
 
-            foreach($contatos as $contato)
-            {
-                $lista[$i]['id'] = $contato->getId();
-                $lista[$i]['nome'] = $contato->getNome();
-                $lista[$i]['tell'] = $contato->getTell();
-                $lista[$i]['cell'] = $contato->getCell();
-                $lista[$i]['email'] = $contato->getEmail();
-                $lista[$i]['bairro'] = $contato->getBairro();
-                $lista[$i]['status'] = $contato->getStatus();
-                $i++;
-            }
+        $i = 0;
+        $lista = array();
+        foreach($contatos as $contato)
+        {
+            $lista[$i]['id'] = $contato->getId();
+            $lista[$i]['nome'] = $contato->getNome();
+            $lista[$i]['tell'] = $contato->getTell();
+            $lista[$i]['cell'] = $contato->getCell();
+            $lista[$i]['email'] = $contato->getEmail();
+            $lista[$i]['bairro'] = $contato->getBairro();
+            $lista[$i]['status'] = $contato->getStatus();
+            $lista[$i]['posicao'] = $i;
+            $i++;
         }
 
         return $this->render('ContatosBundle:Default:listagem.html.twig',
             array(
                 'contatos' => $lista,
-                'rota' => 'desativados'
+                'rota' => 'desativado',
+                'totContatos' => $i
             )
         );
     }
@@ -99,10 +87,13 @@ class DefaultController extends Controller
      */
     public function contatosNovoAction(Request $request)
     {
-        if($request->request->all()){
+        var_dump($request->request);
+
+
+        //if($request->request->all()){
             //var_dump($request->request->all());
 
-            $nome = $request->request->get('txtnome');
+            $nome = $request->request->get('nome');
             $tell = $request->request->get('tell');
             $cell = $request->request->get('cell');
             $email = $request->request->get('email');
@@ -120,7 +111,7 @@ class DefaultController extends Controller
 
             $em->persist($contato);
             $em->flush();
-        }
+        //}
 
         $i = 0;
         $lista[$i]['id'] = '';
@@ -130,56 +121,44 @@ class DefaultController extends Controller
         $lista[$i]['email'] = '';
         $lista[$i]['bairro'] = '';
 
-        return $this->render('ContatosBundle:Default:formulario.html.twig', array('contatos' => $lista,) );
+        return $this->redirectToRoute('contatosListagem');
+        //return $this->render('ContatosBundle:Default:formulario.html.twig', array('contatos' => $lista,) );
     }
 
     /**
-     * @Route("/Contatos/alterar/{id}", name="contatosAlterar")
+     * @Route("/Contatos/alterar", name="contatosAlterar")
      */
-    public function contatosAlterarAction(Request $request, $id)
+    public function contatosAlterarAction(Request $request)
     {
-        $contatos=$this->getDoctrine()
-            ->getRepository('ContatosBundle\Entity\Contatos')
-            ->find($id);
-            $i = 0;
-            $lista[$i]['id'] = $contatos->getId();
-            $lista[$i]['nome'] = $contatos->getNome();
-            $lista[$i]['tell'] = $contatos->getTell();
-            $lista[$i]['cell'] = $contatos->getCell();
-            $lista[$i]['email'] = $contatos->getEmail();
-            $lista[$i]['bairro'] = $contatos->getBairro();
+        if(!$request->request->get('id')){
+            return $this->redirectToRoute('contatosListagem');
+        }else{
 
-        if($request->request->all()){
+            $id = $request->request->get('id');
 
             $em = $this->getDoctrine()->getManager();
-            $product = $em->getRepository('ContatosBundle\Entity\Contatos')->find($lista[$i]['id']);
+            $product = $em->getRepository('ContatosBundle\Entity\Contatos')->find($id);
 
             if (!$product) {
                 throw $this->createNotFoundException(
-                    'No product found for id '.$lista[$i]['id']
+                    'No product found for id '.$id
                 );
             }
 
-            $nome = $request->request->get('txtnome');
-            $tell = $request->request->get('tell');
-            $cell = $request->request->get('cell');
-            $email = $request->request->get('email');
-            $bairro = $request->request->get('bairro');
+            $product->setNome($request->request->get('nome'));
+            $product->setTell($request->request->get('tell'));
+            $product->setCell($request->request->get('cell'));
+            $product->setEmail($request->request->get('email'));
+            $product->setBairro($request->request->get('bairro'));
 
-            $product->setNome($nome);
-            $product->setTell($tell);
-            $product->setCell($cell);
-            $product->setEmail($email);
-            $product->setBairro($bairro);
             $em->flush();
-
-            return $this->redirectToRoute('contatosListagem');
+            if($request->request->get('rota') == "ativos")
+                return $this->redirectToRoute('contatosListagem');
+            else
+                return $this->redirectToRoute('contatosListagemDesativados');
         }
-        return $this->render('ContatosBundle:Default:formulario.html.twig',
-            array(
-                'contatos' => $lista,
-            )
-        );
+
+
     }
 
     /**

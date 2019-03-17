@@ -11,7 +11,7 @@
     </style>
 
     <div style="text-align: center;">
-        {% if mensagem == "ativos" %}
+        {% if rota == "ativos" %}
             <h2>Serviços Ativos</h2>
         {% else %}
             <h2>Serviços Desativados</h2>
@@ -35,18 +35,16 @@
 
             {% for servico in servicos %}
                 <tr>
-                    {#<th>{{ servico.id }}</th>#}
-                    <td id="nome">{{ servico.Nomeservico }}</td>
-                    <td id="preco">{{ servico.Preco }}</td>
-                    <form id="formtab" method="post">
-                    <td id="nomeinput" hidden><input class="form-control" type="text" id="nome" name="nome" value="{{ servico.Nomeservico }}"></td>
-                    <td id="precoinput" hidden><input class="form-control" type="text" id="preco" name="preco" value="{{ servico.Preco }}"></td>
+                    <form id="formtab{{ servico.posicao }}" method="post">
+                    <td id="nome{{ servico.posicao }}">{{ servico.Nomeservico }}</td>
+                    <td id="preco{{ servico.posicao }}">{{ servico.Preco }}</td>
 
-                    {#<th>{{ servico.datacriacao }}</th>#}
+                    <td id="nomeinput{{ servico.posicao }}" hidden><input class="form-control" type="text" id="nome" name="nome" value="{{ servico.Nomeservico }}"></td>
+                    <td id="precoinput{{ servico.posicao }}" hidden><input class="form-control" type="text" id="preco" name="preco" value="{{ servico.Preco }}"></td>
                     <td>{{ servico.dtAtualizacao|date('d/m/Y') }}</td>
                     <td>
-                        <button type="button" class="btn btn-info" id="btn-editar" >Editar</button>
-                        <button type="button" class="btn btn-info" id="btn-salvar" hidden>Salvar</button>
+                        <button type="button" class="btn btn-info" id="btn-editar{{ servico.posicao }}" >Editar</button>
+                        <button type="button" class="btn btn-info" id="btn-salvar{{ servico.posicao }}" hidden>Salvar</button>
                     </td>
                     <input hidden name="invisivel" value="{{ servico.id }}">
                     </form>
@@ -65,7 +63,7 @@
                     <td><input class="form-control" type="text" id="nome" name="nome" placeholder="Nome servico"></td>
                     <td><input class="form-control" type="text" id="preco" name="preco" placeholder="preco"></td>
                     <td></td>
-                    <td><input class="btn btn-success" type="submit" value="Cadastrar"></td>
+                    <td><input class="btn btn-success col-12" type="submit" value="Cadastrar"></td>
                     <td></td>
                 </form>
             </tr>
@@ -88,17 +86,18 @@
             document.getElementById('cadastro').removeAttribute("hidden");
             document.getElementById('trbtnAgendar').setAttribute("hidden", true);
         }
-        $('#btn-editar').click(function () {
-            $('#nome').attr("hidden", true)
-            $('#nomeinput').attr("hidden", false)
-            $('#preco').attr("hidden", true)
-            $('#precoinput').attr("hidden", false)
-            $('#btn-editar').attr("hidden", true)
-            $('#btn-salvar').attr("hidden", false)
+        {% for servico in servicos %}
+        $('#btn-editar{{ servico.posicao }}').click(function () {
+            $('#nome{{ servico.posicao }}').attr("hidden", true)
+            $('#nomeinput{{ servico.posicao }}').attr("hidden", false)
+            $('#preco{{ servico.posicao }}').attr("hidden", true)
+            $('#precoinput{{ servico.posicao }}').attr("hidden", false)
+            $('#btn-editar{{ servico.posicao }}').attr("hidden", true)
+            $('#btn-salvar{{ servico.posicao }}').attr("hidden", false)
         })
-        $('#btn-salvar').click(function () {
-            $('#formtab').submit();
+        $('#btn-salvar{{ servico.posicao }}').click(function () {
+            $('#formtab{{ servico.posicao }}').submit();
         })
-
+        {% endfor %}
     </script>
 {%  endblock %}
